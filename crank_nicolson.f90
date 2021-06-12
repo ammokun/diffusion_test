@@ -27,7 +27,8 @@ end do
 !call write_vector(rhs,n_max)
 
 call triv_solver(a,b,c,n_max,rhs)
-!!!!------------
+!!!!--------------------
+!!!! Thomas method
 !!!!  |b1 c1         |
 !!!!  |a2 b2 c2      |
 !!!!A=|  a3 b3 c3    |
