@@ -14,8 +14,12 @@ real(8),parameter :: planck=6.62607d-34 ![Js]
 real(8),parameter :: omega_n2=2358.6d2*cc ![rad/s]
 real(8),parameter :: kai_n2=14.32d2/2358.6d2
 
+real(8), parameter :: f=170.0d9 !wave_frequency
+real(8), parameter :: fb=170.0d9 !baced wave_frequency for fixing dx
+real(8), parameter :: amp=1.4d6*dsqrt(2.0d0) !wave_amplitude
+real(8), parameter :: lam=cc/f
 
-integer :: i,j,k,l,n,m,r,z,v,w,a
+integer :: i,j,k,l,n,m,r,z,v,w
 integer :: num,i_dum,cont_num,cont_num2,point
 integer, parameter :: nmax=1000000000 !calcuration_number !about 20e-6[s]
 integer, parameter :: divx=int(100*fb/f) !cell_division_number
@@ -45,8 +49,7 @@ real(8), parameter :: gamm0=1.40d0
 real(8), parameter :: press0=760.0d0 !ambient_pressure[Torr]
 real(8), parameter :: temg0=300.0d0 !gas_temperature[K]
 real(8), parameter :: temv0=temg0 !vibrational_temperature[K]
-real(8), parameter :: rhog0=press0*133.322d0/temg0
-&                           /(gas0/mN2*rN2+gas0/mO2*rO2) 
+real(8), parameter :: rhog0=press0*133.322d0/temg0/(gas0/mN2*rN2+gas0/mO2*rO2) 
 real(8), parameter :: ng0=rhog0/(mN2*rN2+mO2*rO2)*NA      
 real(8), parameter :: velg0=0.0d0
 real(8), parameter :: tauvt=1.0d-6 !vibrational_relaxation_time
