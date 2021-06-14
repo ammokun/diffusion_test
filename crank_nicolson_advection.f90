@@ -11,7 +11,7 @@ real(8), parameter :: x0 = 0.0d0
 real(8), parameter :: x1 = 1.0d0
 real(8), parameter :: dx = 0.01
 
-real(8), parameter :: nu=0.01
+real(8), parameter :: nu=-0.01
 
 real(8), dimension(1:jmax) :: a,b,c
 real(8), dimension(0:jmax) ::rhs
