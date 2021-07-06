@@ -25,13 +25,13 @@ integer, parameter :: nmax=10 !calcuration_number !about 20e-6[s]
 integer, parameter :: divx=int(100*fb/f) !cell_division_number
 integer, parameter :: divp=10 !cell_division_number
 integer, parameter :: divt=divx*1.1 !time_division_number
-integer, parameter :: imax=int(300*fb/f)+1 !cell_number
+integer, parameter :: imax=int(100*fb/f)+1 !cell_number
 
 integer, parameter :: sout=10000 !output_interval
 integer, parameter :: lim_out=3001 !output_limit(n/sout)
 integer, parameter :: datamax=1000 !number_of_input_data
 
-!real(8), parameter :: dx=lam/dble(divx) !dt_cell_length
+real(8), parameter :: dx=lam/dble(divx) !dt_cell_length
 real(8), parameter :: dt_g=1.0d0/f !del_time_for_particles
 real(8), parameter :: dt_p=1.0d0/f !del_time_for_particles
 real(8), parameter :: dt_e=1.0d0/f/dble(divt) !del_time_for_waves

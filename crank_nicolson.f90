@@ -3,71 +3,42 @@ program crank_nicolson
 use module_param
 implicit none
     
-integer, parameter :: jmax=101
 !integer, parameter :: nmax = 1000
 
 real(8), parameter :: cfl = 0.01d0
 real(8), parameter :: x0 = 0.0d0
 real(8), parameter :: x1 = 1.0d0
-real(8), parameter :: dx = 0.01
+!real(8), parameter :: dx = 0.01
 
-real(8), parameter :: nu=0.01
-
-real(8), dimension(1:jmax) :: a,b,c
-real(8), dimension(0:jmax) ::rhs
-
-real(8), dimension(0:jmax) ::q,x
-real(8), dimension(0:jmax) ::q0
+real(8), dimension(0:imax) ::q,x,q1,source_x
+real(8), dimension(0:imax) ::q0
 real(8) :: dt
-real(8), dimension(0:jmax) :: D_eff
-dt =nu*2*dx*dx
+real(8), dimension(0:imax) :: D_eff
 
 
 
-do j=0,jmax
+do j=0,imax
     x(j)=dx * j
     D_eff(j)=-1.0d0
+    source_x(j)=0.0d0
 end do
 
-do j=1,jmax-1
-    a(j)=D_eff(j)*nu
-    b(j)=1.0d0-2.0d0*D_eff(j)*nu
-    c(j)=D_eff(j)*nu
-end do
-
-do j=1,jmax
-    if(x(j)<0.50d0) then
-        q0(j)=x(j)*2.0d0
-    else
-        q0(j)=-x(j)*2.0d0+2.0d0
-    end if
+do j=1,imax
+    q0(j)=x(j)*1.0d2
 end do
 
 
 q=q0
 q(0)=0.0d0
-q(jmax)=0.0d0
-do n=1,100000
+q(imax)=0.0d0
+do n=1,1000
 
-
-    do j=1,jmax-1
-        !rhs(j)=0.25d0*nu*q(j-1)+q(j)-0.25d0*nu*q(j+1)
-        rhs(j)=-D_eff(j)*nu*q(j-1)+(1.0d0+2.0d0*D_eff(j)*nu)*q(j)-D_eff(j)*nu*q(j+1)
-    end do
-
-    !call triv_solver(a,b,c,jmax-1,rhs)
-
-    q=rhs
-    
-    q(0)=0.0d0
-    q(jmax)=0.0d0
+    call diffudion_cn(D_eff,q1,q,source_x)
+    q=q1
 end do
 
-write(*,*) "dx,dt: ",dx,dt
-write(*,*) "t: ",n*dt
-
 open(10, file = 'output.dat', form = 'formatted')
-do j = 0, jmax
+do j = 0, imax
     write(10,*) x(j), q0(j), q(j)
 end do
 close(10)
@@ -75,6 +46,39 @@ close(10)
 !call write_vector(q,n_max)
 
 end program
+
+subroutine diffudion_cn(dif_x,nxa,nxb,source_x)
+    use module_param
+    implicit none
+
+    real(8),intent(in) :: dif_x(0:imax)
+    real(8),intent(in) :: nxb(0:imax)
+    real(8),intent(in) :: source_x(0:imax)
+    real(8),intent(out) :: nxa(0:imax)
+
+    real(8), dimension(1:imax) :: a,b,c
+    real(8), dimension(0:imax) ::rhs
+    real(8) :: nu
+
+    nu=dt_p/(2*dx*dx)
+
+    do j=1,imax-1
+        a(j)=dif_x(j)*nu
+        b(j)=1.0d0-2.0d0*dif_x(j)*nu
+        c(j)=dif_x(j)*nu
+    end do
+
+    do j=1,imax-1
+        rhs(j)=-dif_x(j)*nu*nxb(j-1)+(1.0d0+2.0d0*dif_x(j)*nu)*nxb(j)-dif_x(j)*nu*nxb(j+1)
+    end do
+
+    call triv_solver(a,b,c,imax-1,rhs)
+    
+    nxa=rhs
+    nxa(0)=0.0d0
+    nxa(imax)=0.0d0
+
+end subroutine
 
 subroutine triv_solver(a,b,c,n_max,xx)
     implicit none
