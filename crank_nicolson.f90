@@ -3,24 +3,24 @@ program crank_nicolson
 use module_param
 implicit none
     
-integer, parameter :: jmax=101
+integer, parameter :: jmax=1000
 !integer, parameter :: nmax = 1000
 
 real(8), parameter :: cfl = 0.01d0
 real(8), parameter :: x0 = 0.0d0
 real(8), parameter :: x1 = 1.0d0
-real(8), parameter :: dx = 0.01
+real(8), parameter :: dx = 0.001
 
-real(8), parameter :: nu=0.01
+real(8), parameter :: nu=0.5
 
 real(8), dimension(1:jmax) :: a,b,c
 real(8), dimension(0:jmax) ::rhs
 
-real(8), dimension(0:jmax) ::q,x
+real(8), dimension(0:jmax) ::q,x,qt
 real(8), dimension(0:jmax) ::q0
 real(8) :: dt
 real(8), dimension(0:jmax) :: D_eff
-dt =nu*2*dx*dx
+dt =nu*dx*dx
 
 
 
@@ -36,18 +36,19 @@ do j=1,jmax-1
 end do
 
 do j=1,jmax
-    if(x(j)<0.50d0) then
-        q0(j)=x(j)*2.0d0
-    else
-        q0(j)=-x(j)*2.0d0+2.0d0
-    end if
+    !if(x(j)<0.50d0) then
+    !    q0(j)=x(j)*2.0d0
+    !else
+    !    q0(j)=-x(j)*2.0d0+2.0d0
+    !end if
+    q0(j)=sin(pi*x(j))
 end do
 
 
 q=q0
 q(0)=0.0d0
 q(jmax)=0.0d0
-do n=1,100000
+do n=1,1000
 
 
     do j=1,jmax-1
@@ -63,12 +64,22 @@ do n=1,100000
     q(jmax)=0.0d0
 end do
 
+do j=1,jmax
+    !if(x(j)<0.50d0) then
+    !    q0(j)=x(j)*2.0d0
+    !else
+    !    q0(j)=-x(j)*2.0d0+2.0d0
+    !end if
+    qt(j)=sin(pi*x(j))*exp(-pi*pi*n*dt)
+end do
+
+
 write(*,*) "dx,dt: ",dx,dt
 write(*,*) "t: ",n*dt
 
 open(10, file = 'output.dat', form = 'formatted')
 do j = 0, jmax
-    write(10,*) x(j), q0(j), q(j)
+    write(10,*) x(j), q0(j), q(j),qt(j), sqrt((q(j)-qt(j))**2)
 end do
 close(10)
 

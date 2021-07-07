@@ -33,8 +33,8 @@ end do
 do k=0,kmax   
     do j=0,jmax
         D_eff(j,k)=1.0d0
-        !q0(j,k)=exp((-(x(j)-0.5d0)**2-(y(k)-0.5d0)**2)/(2*0.10**2))
-        q0(j,k)=0.0d0
+        q0(j,k)=exp((-(x(j)-0.5d0)**2-(y(k)-0.5d0)**2)/(2*0.10**2))
+        !q0(j,k)=0.0d0
     end do
 end do
 
